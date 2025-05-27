@@ -1,39 +1,55 @@
-#include "resources_manager.h"
+ï»¿#include "resources_manager.h"
 
 struct ImageResInfo {
-    std::string id; // Í¼Æ¬ID
-    LPCTSTR path; // Í¼Æ¬Â·¾¶
+    std::string id; // å›¾ç‰‡ID
+    LPCTSTR path; // å›¾ç‰‡è·¯å¾„
 };
 struct AtlasResInfo {
-    std::string id; // Í¼Æ¬ID
-    LPCTSTR path; // Í¼Æ¬Â·¾¶
-    int num_frames; // Í¼Æ¬Ö¡Êı
+    std::string id; // å›¾ç‰‡ID
+    LPCTSTR path; // å›¾ç‰‡è·¯å¾„
+    int num_frames; // å›¾ç‰‡å¸§æ•°
+
+    AtlasResInfo(const std::string& id, LPCTSTR path, int num_frames) : id(id), path(path), num_frames(num_frames) {}
 };
 
-// Í¼Æ¬×ÊÔ´
+// å›¾ç‰‡èµ„æº
 static const std::vector<ImageResInfo> image_info_list = {
-    { "background", _T(R"(res\background.png)")}, // ±³¾°Í¼Æ¬
-    // { "player", _T(R"(res\snake\snake.png)")}, // Íæ¼ÒÍ¼Æ¬
+    { "background", _T(R"(res\assets\background\background.png)")}, 
+    { "white_flower", _T(R"(res\assets\background\white_flower\white_flower.png)")},
+    { "rock_type_1", _T(R"(res\assets\entity\rock\rock_0.png)")},
+    { "rock_type_2", _T(R"(res\assets\entity\rock\rock_1.png)")},
+
+
+    { "button", _T(R"(res\assets\entity\button\button.png)")},
+    { "button_selected", _T(R"(res\assets\entity\button\button_selected.png)")},
 };
 
-// Í¼¼¯×ÊÔ´
+// å›¾é›†èµ„æº
 static const std::vector<AtlasResInfo> atlas_info_list = {
-    /*
-    { "food", _T(R"(res\food\food.png)"), 1}, // Ê³ÎïÍ¼Æ¬
-    { "enemy", _T(R"(res\enemy\enemy.png)"), 1}, // µĞÈËÍ¼Æ¬
-    { "bullet", _T(R"(res\bullet\bullet.png)"), 1}, // ×Óµ¯Í¼Æ¬
-    */
+    { "snake_menu", _T(R"(res\assets\background\snake_menu\snake_menu_%d.png)"), 7},
+    { "tree", _T(R"(res\assets\background\tree\tree_%d.png)"), 4},
+
+    { "big_grass", _T(R"(res\assets\background\big_grass\big_grass_%d.png)"), 4},
+    { "little_grass", _T(R"(res\assets\background\little_grass\little_grass_%d.png)"), 4},
+    { "red_flower", _T(R"(res\assets\background\red_flower\red_flower_%d.png)"), 4},
+    { "yellow_flower", _T(R"(res\assets\background\yellow_flower\yellow_flower_%d.png)"), 4},
+
+    { "mushroom_normal", _T(R"(res\assets\entity\mushroom_normal\mushroom_normal_%d.png)"), 2},
+    { "mushroom_growth", _T(R"(res\assets\entity\mushroom_growth\mushroom_growth_%d.png)"), 7},
+    { "mushroom_hide", _T(R"(res\assets\entity\mushroom_hide\mushroom_hide_%d.png)"), 4},
+    { "mushroom_show", _T(R"(res\assets\entity\mushroom_show\mushroom_show_%d.png)"), 4},
+
 };
 
-// ¼ì²éÍ¼Æ¬ÊÇ·ñÓĞĞ§
+// æ£€æŸ¥å›¾ç‰‡æ˜¯å¦æœ‰æ•ˆ
 static inline bool check_image_valid(IMAGE* image) {
     return GetImageBuffer(image);
 }
 
-// ³õÊ¼»¯µ¥Àı¶ÔÏó
+// åˆå§‹åŒ–å•ä¾‹å¯¹è±¡
 ResourcesManager* ResourcesManager::_instance = nullptr; 
 
-// »ñÈ¡µ¥Àı¶ÔÏó
+// è·å–å•ä¾‹å¯¹è±¡
 ResourcesManager* ResourcesManager::instance() { 
     if (_instance == nullptr) {
         _instance = new ResourcesManager();
@@ -44,14 +60,14 @@ ResourcesManager* ResourcesManager::instance() {
 ResourcesManager::ResourcesManager() = default;
 ResourcesManager::~ResourcesManager() = default;
 
-// ²éÕÒÍ¼Æ¬×ÊÔ´
+// æŸ¥æ‰¾å›¾ç‰‡èµ„æº
 IMAGE* ResourcesManager::find_image(const std::string& id) const { 
-    const auto& it = image_pool.find(id); // ²éÕÒÍ¼Æ¬×ÊÔ´
-    if (it == image_pool.end()) // Èç¹ûÃ»ÓĞÕÒµ½
-        return nullptr; // ·µ»Ø¿ÕÖ¸Õë
-    return it->second; // ·µ»ØÍ¼Æ¬×ÊÔ´
+    const auto& it = image_pool.find(id); // æŸ¥æ‰¾å›¾ç‰‡èµ„æº
+    if (it == image_pool.end()) // å¦‚æœæ²¡æœ‰æ‰¾åˆ°
+        return nullptr; // è¿”å›ç©ºæŒ‡é’ˆ
+    return it->second; // è¿”å›å›¾ç‰‡èµ„æº
 }
-// ²éÕÒÍ¼¼¯×ÊÔ´
+// æŸ¥æ‰¾å›¾é›†èµ„æº
 Atlas* ResourcesManager::find_atlas(const std::string& id) const {
     const auto& it = atlas_pool.find(id);
     if (it == atlas_pool.end())
@@ -59,25 +75,25 @@ Atlas* ResourcesManager::find_atlas(const std::string& id) const {
     return it->second;
 }
 
-// ¼ÓÔØ×ÊÔ´
+// åŠ è½½èµ„æº
 void ResourcesManager::load() {
-    // ¼ÓÔØÍ¼Æ¬×ÊÔ´
+    // åŠ è½½å›¾ç‰‡èµ„æº
     for (const auto& info : image_info_list) { 
         IMAGE* image = new IMAGE;
         loadimage(image, info.path);
 
-        if (!check_image_valid(image)) // ¼ì²âÍ¼Æ¬ÊÇ·ñÓĞĞ§
+        if (!check_image_valid(image)) // æ£€æµ‹å›¾ç‰‡æ˜¯å¦æœ‰æ•ˆ
             throw info.path;
 
         image_pool[info.id] = image;
     }
 
-    // ¼ÓÔØÍ¼¼¯×ÊÔ´
+    // åŠ è½½å›¾é›†èµ„æº
     for (const auto& info : atlas_info_list) { 
         Atlas* atlas = new Atlas;
         atlas->load(info.path, info.num_frames);
 
-        for (int i = 0; i < atlas->get_size(); i++) { // ¼ì²âÃ¿Ò»Ö¡Í¼Æ¬ÊÇ·ñÓĞĞ§
+        for (int i = 0; i < atlas->get_size(); i++) { // æ£€æµ‹æ¯ä¸€å¸§å›¾ç‰‡æ˜¯å¦æœ‰æ•ˆ
             IMAGE* image = atlas->get_image(i);
             if(!check_image_valid(image))
                 throw info.path;
@@ -87,8 +103,12 @@ void ResourcesManager::load() {
     }
 
     /*
-    load_audio(); // ¼ÓÔØÒôÆµ×ÊÔ´
+    load_audio(); // åŠ è½½éŸ³é¢‘èµ„æº
     */
+    load_audio(_T(R"(res\test_asset\bgm\start_scene_bgm.mp3)"), _T("start_menu_bgm"));
+
+    load_audio(_T(R"(res\test_asset\sounds\click.mp3)"), _T("click"));
+
 }
 
 

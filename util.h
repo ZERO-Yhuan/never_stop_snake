@@ -9,6 +9,11 @@ struct Rect
 {
     int x, y;
     int w, h;
+    Rect() : x(0), y(0), w(0), h(0) {} // 默认构造函数，初始化矩形的坐标和大小为 0
+    Rect(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {} // 构造函数，初始化矩形的坐标和大小
+    Rect(float x, float y, float w, float h) 
+        : x(static_cast<int>(x)), y(static_cast<int>(y)), 
+        w(static_cast<int>(w)), h(static_cast<int>(h)) {} // 支持浮点数参数的构造函数
 };
 
 // 提供支持透明通道的图像绘制函数
@@ -25,6 +30,13 @@ inline void putimage_alpha(IMAGE* img, const Rect* rect_dst) {
         GetImageHDC(GetWorkingImage()), rect_dst->x, rect_dst->y, rect_dst->w, rect_dst->h,
         GetImageHDC(img), 0, 0, img->getwidth(), img->getheight(), blend_func
         );
+}
+
+inline void outtextxy_shaded(int x, int y, LPCTSTR str) {
+    settextcolor(RGB(45, 45, 45)); // 设置文本颜色为深灰色
+    outtextxy(x + 2, y + 2, str); // 绘制阴影文本
+    settextcolor(RGB(255, 255, 255)); // 设置文本颜色为白色
+    outtextxy(x, y, str); // 绘制正常文本
 }
 
 // 封装音频播放相关函数，将传入的参数转换为对应的 MCI 命令字符串

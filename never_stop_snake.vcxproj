@@ -118,6 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,17 +129,32 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="collision_manager.cpp" />
+    <ClCompile Include="entity.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="resources_manager.cpp" />
+    <ClCompile Include="scene_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation.h" />
     <ClInclude Include="atlas.h" />
+    <ClInclude Include="button.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="collision_manager.h" />
     <ClInclude Include="collision_box.h" />
     <ClInclude Include="collision_layer.h" />
+    <ClInclude Include="entity.h" />
+    <ClInclude Include="game_scene.h" />
+    <ClInclude Include="menu_scene.h" />
+    <ClInclude Include="mushroom.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="resources_manager.h" />
+    <ClInclude Include="rock.h" />
+    <ClInclude Include="scene.h" />
+    <ClInclude Include="scene_manager.h" />
+    <ClInclude Include="start_scene.h" />
     <ClInclude Include="timer.h" />
+    <ClInclude Include="ui.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="vector2.h" />
   </ItemGroup>

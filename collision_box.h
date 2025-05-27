@@ -50,6 +50,11 @@ public:
     { 
         this->size = size;
     }
+    void set_size(float width, float height) 
+    { 
+        this->size.x = width;
+        this->size.y = height;
+    }
     void set_position(const Vector2& position) 
     { 
         this->position = position; 

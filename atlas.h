@@ -3,6 +3,7 @@
 #include <vector>
 #include <graphics.h>
 
+
 // ÕººØ¿‡
 class Atlas{
 private:
@@ -17,10 +18,10 @@ public:
     void load(LPCTSTR path_template, int num) {
         img_list.clear();
         img_list.resize(num);
-
+        
         TCHAR path_file[256];
         for (int i = 0; i < num; i++) {
-            _stprintf_s(path_file, path_template, i + 1);
+            _stprintf_s(path_file, path_template, i);
             loadimage(&img_list[i], path_file);
         }
     }

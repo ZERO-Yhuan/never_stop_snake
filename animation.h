@@ -16,6 +16,7 @@ private:
     Timer timer;
     Vector2 position;
     bool is_loop = false;
+    bool has_played = false; // 是否已经播放过动画
     size_t index_frame = 0; // 当前帧索引
     std::vector<IMAGE*> frame_list;
     std::function<void()> on_finished; // 动画结束回调函数
@@ -25,14 +26,15 @@ public:
     Animation() {
         timer.set_one_shot(false); 
         timer.set_on_timeout([&]() {
+
             index_frame++; // 切换到下一帧
+
             if(index_frame >= frame_list.size()) {
-                if (is_loop) { // 如果是循环动画，则重置索引
-                    index_frame = 0;
-                }
-                else { // 否则停止动画
-                    if (on_finished) 
-                        on_finished();
+                index_frame = is_loop ? 0 : frame_list.size() - 1; // 循环或停在最后一帧
+                bool can_shot = is_loop || (!is_loop && !has_played);
+                if(can_shot && on_finished) {
+                    on_finished(); // 调用动画结束回调函数
+                    has_played = true; // 标记动画已经播放过
                 }
             }
         });
@@ -43,14 +45,20 @@ public:
     void reset() { 
         timer.restart();
         index_frame = 0;
+        has_played = false; // 重置播放状态
     }   
     // 设置动画位置
     void set_position(const Vector2& pos) { 
         position = pos; 
     }
+
+    const Vector2& get_position() const { 
+        return position; 
+    }
+
     // 设置是否循环
     void set_loop(bool is_loop) {
-        is_loop = is_loop; 
+        this->is_loop = is_loop; 
     }
     // 设置动画间隔
     void set_interval(float interval) {
@@ -67,11 +75,17 @@ public:
             frame_list.emplace_back(img);
         }
     }
+    void add_frame(IMAGE* img) {
+        frame_list.emplace_back(img);
+        
+    }
     // 更新动画
     void on_update(float delta) {
         timer.on_update(delta); 
     }
-    void on_render() {
+
+    // 动画渲染函数(按动画原大小渲染)
+    void on_render() { 
         IMAGE* img = frame_list[index_frame]; // 获取当前帧
         Rect rect_dst; // 计算目标矩形
         rect_dst.x = (int)(position.x - img->getwidth() / 2); // 中心对齐
@@ -79,6 +93,11 @@ public:
         rect_dst.w = img->getwidth();
         rect_dst.h = img->getheight();
 
+        putimage_alpha(img, &rect_dst); // 绘制当前帧
+    }
+    // 动画渲染函数(按参数矩形渲染)
+    void on_render(const Rect& rect_dst) {
+        IMAGE* img = frame_list[index_frame]; // 获取当前帧
         putimage_alpha(img, &rect_dst); // 绘制当前帧
     }
 };

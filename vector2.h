@@ -33,11 +33,11 @@ public:
         return x * v.x + y * v.y;
     }
 
-    Vector2 operator* (int val) const {
+    Vector2 operator* (float val) const {
         return Vector2(x * val, y * val);
     }
 
-    void operator*= (int val) {
+    void operator*= (float val) {
         x *= val;
         y *= val;
     }
