@@ -2,20 +2,23 @@
 #include <thread>
 #include <graphics.h>
 
-#include "util.h"
+#include "./tool/util.h"
 
-#include "scene.h"
-#include "start_scene.h"
-#include "game_scene.h"
-#include "menu_scene.h"
+#include "./scene/scene.h"
+#include "./scene/custom/start_scene.h"
+#include "./scene/custom/game_scene.h"
+#include "./scene/custom/menu_scene.h"
 
 
-#include "resources_manager.h"
-#include "scene_manager.h"
-#include "collision_manager.h"
+#include "./manager/resources_manager.h"
+#include "./manager/scene_manager.h"
+#include "./manager/collision_manager.h"
 
-#include "camera.h"
+#include "./tool/camera.h"
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 
 using namespace std::chrono;
@@ -29,14 +32,6 @@ Camera main_camera;
 // 绘制背景
 static void draw_background() { 
     static IMAGE* img_baground = ResourcesManager::instance()->find_image("background"); // 获取背景图片
-    /*
-    static Rect rect_dst = {
-        (getwidth() - img_baground->getwidth()) / 2,
-        (getheight() - img_baground->getheight()) / 2,
-        img_baground->getwidth(),
-        img_baground->getheight()
-    }; // 计算背景图片绘制位置和大小
-    */
 
     static Rect rect_dst = {
     0,
@@ -54,8 +49,9 @@ void init_scene() {
 }
 
 int main() {
-    HWND hwnd = initgraph(1080, 720, EW_SHOWCONSOLE); // 初始化图形窗口，设置窗口大小为1920x1080
-    SetWindowText(hwnd, _T("Never STOP - Beta 1.0")); // 设置窗口标题
+    // HWND hwnd = initgraph(1080, 720, EW_SHOWCONSOLE); // 初始化图形窗口，设置窗口大小为1920x1080, "EW_SHOWCONSOLE":显示控制台
+    HWND hwnd = initgraph(1080, 720);
+    SetWindowText(hwnd, _T("Never STOP - 1.0")); // 设置窗口标题
 
     try {
         ResourcesManager::instance()->load(); // 加载资源
@@ -65,10 +61,12 @@ int main() {
         MessageBox(hwnd, err_msg, _T("Error"), MB_OK | MB_ICONERROR); // 弹出错误提示框
         return -1; // 返回错误代码
     }
+    
 
     init_scene(); // 初始化场景
     SceneManager::instance()->set_current_scene(start_scene); // 设置当前场景为开始场景
 
+    settextstyle(26, 0, _T("IPix"));
     setbkmode(TRANSPARENT); // 设置文字透明背景
 
 
@@ -94,6 +92,7 @@ int main() {
         duration<float> delta = duration<float>(frame_start - last_tick); // 计算上一帧到当前帧的时间差
 
         // 处理游戏更新
+        main_camera.on_update(delta.count()); // 更新摄像机
         SceneManager::instance()->on_update(delta.count()); // 更新当前场景
         CollisionManager::instance()->process_collide(); // 更新碰撞管理器
 
@@ -102,7 +101,7 @@ int main() {
 
         // 处理游戏绘图
         SceneManager::instance()->on_render(main_camera); // 绘制当前场景
-        CollisionManager::instance()->on_debug_render(); // 绘制碰撞调试信息
+        // CollisionManager::instance()->on_debug_render(main_camera); // 绘制碰撞调试信息
 
         FlushBatchDraw(); // 将内存缓冲区中的绘图结果一次性输出到屏幕。
 
@@ -118,6 +117,6 @@ int main() {
 
     // 结束批量绘制模式，释放相关资源。
     EndBatchDraw();
-
+    _CrtDumpMemoryLeaks();
     return 0;
 }

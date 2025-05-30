@@ -55,90 +55,151 @@
     <Filter Include="源文件\entity\player">
       <UniqueIdentifier>{6a6a631b-20bd-432e-8392-546b843c2e9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\entity\player\custom">
+      <UniqueIdentifier>{c8e4f392-d6ba-4d01-848d-c7b227fb7090}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\entity\player\custom">
+      <UniqueIdentifier>{9ec40a24-6253-4380-8ae4-33f109dab06e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\scene">
+      <UniqueIdentifier>{67b3e4f8-5416-4dd1-a5ff-50c9dd58ee81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\scene\custom">
+      <UniqueIdentifier>{6faf4c43-3275-4419-9757-35fb7e7e521f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\scene\custom">
+      <UniqueIdentifier>{d355d780-30b5-44c2-9ee7-cdb77dff9aa7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="resources_manager.cpp">
+    <ClCompile Include="scene\custom\game_scene.cpp">
+      <Filter>源文件\scene\custom</Filter>
+    </ClCompile>
+    <ClCompile Include="manager\collision_manager.cpp">
       <Filter>源文件\manager</Filter>
     </ClCompile>
-    <ClCompile Include="collision_manager.cpp">
+    <ClCompile Include="manager\resources_manager.cpp">
       <Filter>源文件\manager</Filter>
     </ClCompile>
-    <ClCompile Include="scene_manager.cpp">
+    <ClCompile Include="manager\scene_manager.cpp">
       <Filter>源文件\manager</Filter>
     </ClCompile>
-    <ClCompile Include="entity.cpp">
+    <ClCompile Include="entity\entity.cpp">
       <Filter>源文件\entity</Filter>
     </ClCompile>
-    <ClCompile Include="player.cpp">
+    <ClCompile Include="entity\player\player.cpp">
       <Filter>源文件\entity\player</Filter>
+    </ClCompile>
+    <ClCompile Include="entity\player\custom\normal_snake.cpp">
+      <Filter>源文件\entity\player\custom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resources_manager.h">
-      <Filter>头文件\manager</Filter>
-    </ClInclude>
-    <ClInclude Include="animation.h">
-      <Filter>头文件\resource</Filter>
-    </ClInclude>
-    <ClInclude Include="atlas.h">
-      <Filter>头文件\resource</Filter>
-    </ClInclude>
-    <ClInclude Include="util.h">
-      <Filter>头文件\tool</Filter>
-    </ClInclude>
-    <ClInclude Include="timer.h">
-      <Filter>头文件\tool</Filter>
-    </ClInclude>
-    <ClInclude Include="vector2.h">
-      <Filter>头文件\tool</Filter>
-    </ClInclude>
-    <ClInclude Include="collision_layer.h">
-      <Filter>头文件\collision</Filter>
-    </ClInclude>
-    <ClInclude Include="collision_box.h">
-      <Filter>头文件\collision</Filter>
-    </ClInclude>
-    <ClInclude Include="collision_manager.h">
-      <Filter>头文件\manager</Filter>
-    </ClInclude>
-    <ClInclude Include="scene.h">
-      <Filter>头文件\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="start_scene.h">
-      <Filter>头文件\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="menu_scene.h">
-      <Filter>头文件\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="game_scene.h">
-      <Filter>头文件\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="scene_manager.h">
-      <Filter>头文件\manager</Filter>
-    </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="entity.h">
-      <Filter>头文件\entity</Filter>
-    </ClInclude>
-    <ClInclude Include="ui.h">
-      <Filter>头文件\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="button.h">
+    <ClInclude Include="ui\custom\button.h">
       <Filter>头文件\ui\custom</Filter>
     </ClInclude>
-    <ClInclude Include="rock.h">
+    <ClInclude Include="ui\ui.h">
+      <Filter>头文件\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="tool\timer.h">
+      <Filter>头文件\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="tool\util.h">
+      <Filter>头文件\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="tool\vector2.h">
+      <Filter>头文件\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\scene.h">
+      <Filter>头文件\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\custom\menu_scene.h">
+      <Filter>头文件\scene\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\custom\start_scene.h">
+      <Filter>头文件\scene\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\custom\game_scene.h">
+      <Filter>头文件\scene\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\animation.h">
+      <Filter>头文件\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\atlas.h">
+      <Filter>头文件\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="manager\collision_manager.h">
+      <Filter>头文件\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="manager\resources_manager.h">
+      <Filter>头文件\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="manager\scene_manager.h">
+      <Filter>头文件\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="entity\custom\aerolite.h">
       <Filter>头文件\entity\custom</Filter>
     </ClInclude>
-    <ClInclude Include="player.h">
+    <ClInclude Include="entity\custom\big_grass.h">
+      <Filter>头文件\entity\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="entity\custom\little_grass.h">
+      <Filter>头文件\entity\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="entity\custom\mushroom.h">
+      <Filter>头文件\entity\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="entity\custom\red_flower.h">
+      <Filter>头文件\entity\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="entity\custom\rock.h">
+      <Filter>头文件\entity\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="entity\custom\white_flower.h">
+      <Filter>头文件\entity\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="entity\custom\yellow_flower.h">
+      <Filter>头文件\entity\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="entity\entity.h">
+      <Filter>头文件\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="entity\player\player.h">
       <Filter>头文件\entity\player</Filter>
     </ClInclude>
-    <ClInclude Include="mushroom.h">
-      <Filter>头文件\entity\custom</Filter>
+    <ClInclude Include="entity\player\custom\normal_snake.h">
+      <Filter>头文件\entity\player\custom</Filter>
     </ClInclude>
+    <ClInclude Include="collision\collision_box.h">
+      <Filter>头文件\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="collision\collision_layer.h">
+      <Filter>头文件\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="tool\camera.h">
+      <Filter>头文件\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="resource2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="never_stop_snake.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\assets\icon.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>
