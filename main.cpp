@@ -16,10 +16,6 @@
 
 #include "./tool/camera.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
 
 using namespace std::chrono;
 
@@ -117,6 +113,5 @@ int main() {
 
     // 结束批量绘制模式，释放相关资源。
     EndBatchDraw();
-    _CrtDumpMemoryLeaks();
     return 0;
 }
