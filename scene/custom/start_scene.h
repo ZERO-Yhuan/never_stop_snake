@@ -30,7 +30,7 @@ public:
     void on_exit() {
 
     }
-    void on_update(float delta) {
+    void on_update(const float delta) {
         tree_animation.on_update(delta);
     }
     void on_render(const Camera& camera) {

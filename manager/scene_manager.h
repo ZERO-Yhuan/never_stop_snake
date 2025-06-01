@@ -21,6 +21,7 @@ public:
         Game
     };
 
+
 private:
     SceneManager();
     ~SceneManager();
@@ -30,7 +31,7 @@ public:
 
     void set_current_scene(Scene* scene); // 设置当前场景
 
-    void switch_scene_to(SceneType type); // 切换场景
+    void switch_scene_to(SceneType type, int state = 0); // 切换场景
 
     void on_update(float delta); // 更新当前场景
 

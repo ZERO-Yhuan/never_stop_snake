@@ -45,6 +45,17 @@ void GameScene::render_score_text() {
 
 }
 
+void GameScene::render_time_text() {
+    LPCTSTR time_str = _T("%d");
+    TCHAR time_text[32];
+    _stprintf_s(time_text, time_str, current_remainder_time);
+    if (!is_game_over) {
+        putimage_alpha(ResourcesManager::instance()->find_image("score_background"), &rect_time);
+        outtextxy_shaded(rect_time.x + 20, rect_time.y + 15, _T("当前时间:"));
+        outtextxy_shaded(rect_time.x + 20, rect_time.y + 45, time_text);
+    }
+}
+
 void GameScene::generate_aerolite(int num) {
     for (int i = 0; i < num && i < Max_Aerolite_Num; i++) {
         int grid_x, grid_y;
@@ -82,7 +93,8 @@ GameScene::GameScene() {
         buttons_game_over.clear();
         buttons_game_over.reserve(2);
         buttons_game_over.emplace_back(button_x - 150, 300, 150, 80, _T("重新开始"), [this]() {
-            SceneManager::instance()->switch_scene_to(SceneManager::SceneType::Game);
+            on_exit();
+            on_enter();
             });
         buttons_game_over.emplace_back(button_x + 150, 300, 150, 80, _T("返回主菜单"), [this]() {
             SceneManager::instance()->switch_scene_to(SceneManager::SceneType::Menu);
@@ -147,6 +159,19 @@ GameScene::GameScene() {
 
  
     } 
+
+    {   // 初始化时间限制计时器
+        time_limit_timer.set_one_shot(false);
+        time_limit_timer.set_wait_time(1);
+        time_limit_timer.set_on_timeout([this]() {
+            current_remainder_time--;
+            if (current_remainder_time == 0) {
+                is_game_over = true; // 如果时间限制结束，则设置游戏结束状态
+                play_audio(_T("game_over"), false);
+            }
+        });
+        time_limit_timer.pause(); // 初始状态下暂停计时器
+    } 
 }
 
 GameScene::~GameScene() {
@@ -201,6 +226,10 @@ void GameScene::on_enter() {
     aerolite_generation_timer.restart();
     aerolite_generation_timer.resume();
 
+    if (game_state == 1) {
+        time_limit_timer.restart();
+        time_limit_timer.resume();
+    }
 }
 
 void GameScene::on_exit() {
@@ -222,6 +251,7 @@ void GameScene::on_exit() {
 
     is_paused = false; // 重置暂停状态
     is_game_over = false; // 重置游戏结束状态
+    current_remainder_time = Limit_Time; // 重置时间限制
 }
 
 void GameScene::on_update(float delta) {
@@ -239,6 +269,9 @@ void GameScene::on_update(float delta) {
     for (Entity* entity : entities) {
         entity->on_update(delta);
     }
+
+    if (game_state == 1)
+        time_limit_timer.on_update(delta);
 
     mushroom_generation_timer.on_update(delta); // 更新蘑菇生成计时器
     aerolite_generation_timer.on_update(delta);
@@ -282,6 +315,9 @@ void GameScene::on_render(const Camera& camera) {
     }
 
     render_score_text();
+
+    if(game_state == 1)
+        render_time_text();
 
     if (is_game_over) {
         for (Button& button : buttons_game_over) {
@@ -441,5 +477,10 @@ void GameScene::destroy_entities() {
     }
 
     entities.clear();
+}
+
+void GameScene::set_scene_state(const int game_state) {
+    if(game_state < 0 || game_state > 2) return; // 无效的游戏状态
+    this->game_state = game_state;
 }
 

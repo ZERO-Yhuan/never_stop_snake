@@ -18,7 +18,7 @@ void SceneManager::set_current_scene(Scene* scene) {
     current_scene->on_enter();
 }
 
-void SceneManager::switch_scene_to(SceneType type) {
+void SceneManager::switch_scene_to(SceneType type, int state) {
     current_scene->on_exit();
     switch (type) {
         case SceneType::Start:
@@ -29,8 +29,18 @@ void SceneManager::switch_scene_to(SceneType type) {
             break;
         case SceneType::Game:
             current_scene = game_scene;
+            switch (state) {
+            case 0:
+                game_scene->set_scene_state(0);
+                break;
+            case 1:
+                game_scene->set_scene_state(1);
+                break;
+
+            }
             break;
     }
+
     current_scene->on_enter();
 }
 
