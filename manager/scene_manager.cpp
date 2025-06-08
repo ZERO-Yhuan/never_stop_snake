@@ -39,6 +39,12 @@ void SceneManager::switch_scene_to(SceneType type, int state) {
 
             }
             break;
+        case SceneType::DoublePlayerGame:
+            current_scene = double_player_game_scene;
+            break;
+        case SceneType::Settings:
+            current_scene = settings_scene;
+            break;
     }
 
     current_scene->on_enter();

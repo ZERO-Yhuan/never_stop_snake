@@ -1,6 +1,6 @@
-#include "game_scene.h"
+#include "double_player_game_scene.h"
 
-void GameScene::init_place_map() {
+void DoublePlayerGameScene::init_place_map() {
     for (int i = 0; i < 30; i++) {
         for (int j = 0; j < 20; j++) {
             can_place_at[i][j] = true; // 初始化所有位置都可以放置
@@ -8,7 +8,7 @@ void GameScene::init_place_map() {
     }
 }
 
-void GameScene::generate_mushroom() {
+void DoublePlayerGameScene::generate_mushroom() {
 
     for (int i = 0; i < Max_Mushroom_Num; i++) {
         if (mushrooms[i]->is_need_growth()) {
@@ -25,38 +25,47 @@ void GameScene::generate_mushroom() {
 
 }
 
-void GameScene::render_score_text() {
-    int score = p1->get_score();
-    LPCTSTR score_str = _T("%d");
-    TCHAR score_text[32];
-    _stprintf_s(score_text, score_str, score);
+void DoublePlayerGameScene::render_score_text() {
+    int scoreP1 = p1->get_score();
+    int scoreP2 = p2->get_score();
+    LPCTSTR scoreP1_str = _T("%d");
+    TCHAR scoreP1_text[32];
+    _stprintf_s(scoreP1_text, scoreP1_str, scoreP1);
+    LPCTSTR scoreP2_str = _T("%d");
+    TCHAR scoreP2_text[32];
+    _stprintf_s(scoreP2_text, scoreP2_str, scoreP2);
     if (!is_game_over) {
-        putimage_alpha(ResourcesManager::instance()->find_image("score_background"), &rect_score);
-        outtextxy_shaded(rect_score.x + 20, rect_score.y + 15, _T("当前得分:"));
-        outtextxy_shaded(rect_score.x + 20, rect_score.y + 45, score_text);
-    }
-    else {
-        settextstyle(52, 0, _T("IPix"));
-        putimage_alpha(ResourcesManager::instance()->find_image("score_background"), &rect_score_game_over);
-        outtextxy_shaded(rect_score_game_over.x + 40, rect_score_game_over.y + 30, _T("当前得分:"));
-        outtextxy_shaded(rect_score_game_over.x + 40, rect_score_game_over.y + 90, score_text);
+        settextstyle(20, 0, _T("IPix"));
+        putimage_alpha(ResourcesManager::instance()->find_image("score_background"), &rect_P1score);
+        outtextxy_shaded(rect_P1score.x + 20, rect_P1score.y + 15, _T("P1当前得分:"));
+        outtextxy_shaded(rect_P1score.x + 20, rect_P1score.y + 45, scoreP1_text);
+
+        putimage_alpha(ResourcesManager::instance()->find_image("score_background"), &rect_P2score);
+        outtextxy_shaded(rect_P2score.x + 20, rect_P2score.y + 15, _T("P2当前得分:"));
+        outtextxy_shaded(rect_P2score.x + 20, rect_P2score.y + 45, scoreP2_text);
         settextstyle(26, 0, _T("IPix"));
     }
-
-}
-
-void GameScene::render_time_text() {
-    LPCTSTR time_str = _T("%d");
-    TCHAR time_text[32];
-    _stprintf_s(time_text, time_str, current_remainder_time);
-    if (!is_game_over) {
-        putimage_alpha(ResourcesManager::instance()->find_image("score_background"), &rect_time);
-        outtextxy_shaded(rect_time.x + 20, rect_time.y + 15, _T("当前时间:"));
-        outtextxy_shaded(rect_time.x + 20, rect_time.y + 45, time_text);
+    if (is_P2game_over) {
+        settextstyle(35, 0, _T("IPix"));
+        putimage_alpha(ResourcesManager::instance()->find_image("score_background"), &rect_score_game_over);
+        outtextxy_shaded(rect_score_game_over.x + 40, rect_score_game_over.y + 60, _T("Player1获胜"));
+        settextstyle(26, 0, _T("IPix"));
+    }
+    if (is_P1game_over) {
+        settextstyle(35, 0, _T("IPix"));
+        putimage_alpha(ResourcesManager::instance()->find_image("score_background"), &rect_score_game_over);
+        outtextxy_shaded(rect_score_game_over.x + 40, rect_score_game_over.y + 60, _T("Player2获胜"));
+        settextstyle(26, 0, _T("IPix"));
+    }
+    if (is_game_draw) {
+        settextstyle(45, 0, _T("IPix"));
+        putimage_alpha(ResourcesManager::instance()->find_image("score_background"), &rect_score_game_over);
+        outtextxy_shaded(rect_score_game_over.x + 70, rect_score_game_over.y + 60, _T("双方平局"));
+        settextstyle(26, 0, _T("IPix"));
     }
 }
 
-void GameScene::generate_aerolite(int num) {
+void DoublePlayerGameScene::generate_aerolite(int num) {
     for (int i = 0; i < num && i < Max_Aerolite_Num; i++) {
         int grid_x, grid_y;
 
@@ -74,7 +83,7 @@ void GameScene::generate_aerolite(int num) {
 }
 
 
-GameScene::GameScene() {
+DoublePlayerGameScene::DoublePlayerGameScene() {
     { // 按钮初始化
         int button_w = ResourcesManager::instance()->find_image("button")->getwidth();
         int button_h = ResourcesManager::instance()->find_image("button")->getheight();
@@ -85,7 +94,8 @@ GameScene::GameScene() {
         buttons_paused.emplace_back(button_x, 250, 150, 80, _T("继续"), [this]() {
             is_paused = false;
             });
-        buttons_paused.emplace_back(button_x, 350, 150, 80, _T("返回主菜单"), [this]() {
+        buttons_paused.emplace_back(button_x, 350, 150, 80, _T("设置"));
+        buttons_paused.emplace_back(button_x, 450, 150, 80, _T("返回主菜单"), [this]() {
             SceneManager::instance()->switch_scene_to(SceneManager::SceneType::Menu);
             });
         
@@ -158,22 +168,9 @@ GameScene::GameScene() {
 
  
     } 
-
-    {   // 初始化时间限制计时器
-        time_limit_timer.set_one_shot(false);
-        time_limit_timer.set_wait_time(1);
-        time_limit_timer.set_on_timeout([this]() {
-            current_remainder_time--;
-            if (current_remainder_time == 0) {
-                is_game_over = true; // 如果时间限制结束，则设置游戏结束状态
-                play_audio(_T("game_over"), false);
-            }
-        });
-        time_limit_timer.pause(); // 初始状态下暂停计时器
-    } 
 }
 
-GameScene::~GameScene() {
+DoublePlayerGameScene::~DoublePlayerGameScene() {
     for (int i = 0; i < 4; i++) {
         if (collision_box_edges[i]) {
             CollisionManager::instance()->destroy_collision_box(collision_box_edges[i]);
@@ -199,53 +196,46 @@ GameScene::~GameScene() {
         p1 = nullptr;
     }
     
+    if (p2) {
+        delete p2;
+        p2 = nullptr;
+    }
 }
 
 
-void GameScene::on_enter() {
+
+void DoublePlayerGameScene::on_enter() {
     init_place_map(); // 初始化放置地图
     can_place_at[1080 / 2 / width_per_grid][720 / 2 / height_per_grid] = false; // 玩家生成位置不可生成建筑物
-
-    init_entities(); // 初始化实体
+    can_place_at[270 / width_per_grid][810 / height_per_grid] = false;
+    init_entities();
     
 
-    buttons_paused[select_button_paused].set_selected(true); 
+    buttons_paused[select_button_paused].set_selected(true);
     buttons_game_over[select_button_game_over].set_selected(true);
 
     if (p1) {
         delete p1;
         p1 = nullptr;
     }
-    switch (SnakeTypeHandle::instance()->current_snake_type)
-    {
-    case 0:
-        p1 = new NormalSnake(); // 初始化玩家对象
-        break;
-    case 1:
-        p1 = new SpeedSnake();
-        break;
-    case 2:
-        // ......
-        break;
-    default:
-        p1 = new NormalSnake(); // 初始化玩家对象
-        break;
-    }
-   
 
-    mushroom_generation_timer.restart(); // 重置蘑菇生成计时器
+    if (p2) {
+        delete p2;
+        p2 = nullptr;
+    }
+
+    p1 = new NormalSnake(270,360);
+    p2 = new NormalSnakeP2(810,360);
+
+    mushroom_generation_timer.restart();
     mushroom_generation_timer.resume(); // 启动蘑菇生成计时器
 
-    aerolite_generation_timer.restart(); // 重置流星生成计时器
-    aerolite_generation_timer.resume(); // 启动流星生成计时器
+    aerolite_generation_timer.restart();
+    aerolite_generation_timer.resume();
 
-    if (game_state == 1) {
-        time_limit_timer.restart(); // 重置时间限制计时器
-        time_limit_timer.resume(); // 启动时间限制计时器
-    }
 }
 
-void GameScene::on_exit() {
+void DoublePlayerGameScene::on_exit() {
     mushroom_generation_timer.pause(); // 暂停蘑菇生成计时器
     aerolite_generation_timer.pause();
 
@@ -257,6 +247,11 @@ void GameScene::on_exit() {
         p1 = nullptr;
     }
 
+    if (p2) {
+        delete p2;
+        p2 = nullptr;
+    }
+
     buttons_paused[select_button_paused].set_selected(false); // 取消选中当前按钮
     buttons_game_over[select_button_game_over].set_selected(false); // 取消选中当前按钮
     select_button_paused = 0; // 重置选中按钮索引
@@ -264,30 +259,43 @@ void GameScene::on_exit() {
 
     is_paused = false; // 重置暂停状态
     is_game_over = false; // 重置游戏结束状态
-    current_remainder_time = Limit_Time; // 重置时间限制
+    is_P1game_over = false;
+    is_P2game_over = false;
+    is_game_draw= false;
 }
 
-void GameScene::on_update(float delta) {
+void DoublePlayerGameScene::on_update(float delta) {
     
 
-    if (is_paused || is_game_over) return; // 如果游戏暂停或结束，则不更新游戏逻辑
+    if (is_paused || is_game_over || is_P1game_over || is_P2game_over) return; // 如果游戏暂停或结束，则不更新游戏逻辑
 
     if (!p1->get_alive()) {
         is_game_over = true; // 如果玩家死亡，则设置游戏结束状态
+        is_P1game_over = true;
+        play_audio(_T("game_over"), false);
+    }
+
+    if (!p2->get_alive()) {
+        is_game_over = true; // 如果玩家死亡，则设置游戏结束状态
+        is_P2game_over = true;
+        play_audio(_T("game_over"), false);
+    }
+
+    if (!p1->get_alive() && !p2->get_alive()) {
+        is_game_over = true;
+        is_game_draw = true;
         play_audio(_T("game_over"), false);
     }
 
     p1->on_update(delta);
+    p2->on_update(delta);
 
     for (Entity* entity : entities) {
         entity->on_update(delta);
     }
 
-    if (game_state == 1)
-        time_limit_timer.on_update(delta);
-
     mushroom_generation_timer.on_update(delta); // 更新蘑菇生成计时器
-    aerolite_generation_timer.on_update(delta); // 更新流星生成计时器
+    aerolite_generation_timer.on_update(delta);
 
     for (Mushroom* mushroom : mushrooms) {
         if (!mushroom->is_need_growth()) { // 只更新已经生长的蘑菇
@@ -304,7 +312,9 @@ void GameScene::on_update(float delta) {
 }
 
 
-void GameScene::on_render(const Camera& camera) {
+
+void DoublePlayerGameScene::on_render(const Camera& camera) {
+
     Rect rect_dst(0, 0, 1080, 720);
     putimage_alpha(ResourcesManager::instance()->find_image("background"), &rect_dst);
 
@@ -317,8 +327,10 @@ void GameScene::on_render(const Camera& camera) {
     for (Entity* entity : entities) {
         entity->on_render(camera);
     }
+
     
     p1->on_render(camera);
+    p2->on_render(camera);
     
     for (Aerolite* aerolite : aerolites) {
         if(aerolite)
@@ -326,9 +338,6 @@ void GameScene::on_render(const Camera& camera) {
     }
 
     render_score_text();
-
-    if(game_state == 1)
-        render_time_text();
 
     if (is_game_over) {
         for (Button& button : buttons_game_over) {
@@ -344,9 +353,10 @@ void GameScene::on_render(const Camera& camera) {
 }
 
 
-void GameScene::on_input(const ExMessage& msg) {
+void DoublePlayerGameScene::on_input(const ExMessage& msg) {
     if (!is_paused) {
         p1->on_input(msg);
+        p2->on_input(msg);
     }
 
     switch (msg.message)
@@ -426,7 +436,7 @@ void GameScene::on_input(const ExMessage& msg) {
 }
 
 
-Vector2 GameScene::get_place_pos() {
+Vector2 DoublePlayerGameScene::get_place_pos() {
     int grid_x, grid_y;
 
     do {
@@ -442,7 +452,7 @@ Vector2 GameScene::get_place_pos() {
     return Vector2(place_x, place_y);
 }
 
-void GameScene::init_entities() {
+void DoublePlayerGameScene::init_entities() {
     
     for (int i = 0; i < 3; i++) {
         Vector2 place_pos = get_place_pos();
@@ -481,17 +491,12 @@ void GameScene::init_entities() {
     }
 }
 
-void GameScene::destroy_entities() {
+void DoublePlayerGameScene::destroy_entities() {
     for (Entity* entity : entities) {
         delete entity;
         entity = nullptr;
     }
 
     entities.clear();
-}
-
-void GameScene::set_scene_state(const int game_state) {
-    if(game_state < 0 || game_state > 2) return; // 无效的游戏状态
-    this->game_state = game_state;
 }
 

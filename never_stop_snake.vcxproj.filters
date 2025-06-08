@@ -70,6 +70,9 @@
     <Filter Include="源文件\scene\custom">
       <UniqueIdentifier>{d355d780-30b5-44c2-9ee7-cdb77dff9aa7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\tool">
+      <UniqueIdentifier>{fa975df8-5fe6-4d49-90ff-056cea6f88e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -94,6 +97,21 @@
       <Filter>源文件\entity\player</Filter>
     </ClCompile>
     <ClCompile Include="entity\player\custom\normal_snake.cpp">
+      <Filter>源文件\entity\player\custom</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\custom\double_player_game_scene.cpp">
+      <Filter>源文件\scene\custom</Filter>
+    </ClCompile>
+    <ClCompile Include="entity\player\custom\normal_snake_p2.cpp">
+      <Filter>源文件\entity\player\custom</Filter>
+    </ClCompile>
+    <ClCompile Include="tool\settings.cpp">
+      <Filter>源文件\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="tool\snake_type_handle.cpp">
+      <Filter>源文件\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="entity\player\custom\speed_snake.cpp">
       <Filter>源文件\entity\player\custom</Filter>
     </ClCompile>
   </ItemGroup>
@@ -190,6 +208,27 @@
     </ClInclude>
     <ClInclude Include="resource2.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\custom\double_player_game_scene.h">
+      <Filter>头文件\scene\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="entity\player\custom\normal_snake_p2.h">
+      <Filter>头文件\entity\player\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="tool\text_handle.h">
+      <Filter>头文件\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\custom\settings_scene.h">
+      <Filter>头文件\scene\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="tool\settings.h">
+      <Filter>头文件\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="tool\snake_type_handle.h">
+      <Filter>头文件\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="entity\player\custom\speed_snake.h">
+      <Filter>头文件\entity\player\custom</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

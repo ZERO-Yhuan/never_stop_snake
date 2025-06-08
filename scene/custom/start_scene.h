@@ -24,7 +24,6 @@ public:
         tree_animation.set_position(Vector2(getwidth() - ResourcesManager::instance()->find_atlas("tree")->get_image(0)->getwidth() / 2,
             getheight() - ResourcesManager::instance()->find_atlas("tree")->get_image(0)->getheight() / 2));
         
-        set_volume(_T("start_menu_bgm"), 30);
         play_audio(_T("start_menu_bgm"), true);
     }
     void on_exit() {

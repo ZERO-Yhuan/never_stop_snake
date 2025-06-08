@@ -3,11 +3,14 @@
 #include <graphics.h>
 
 #include "./tool/util.h"
+#include "./tool/settings.h"
 
 #include "./scene/scene.h"
 #include "./scene/custom/start_scene.h"
 #include "./scene/custom/game_scene.h"
 #include "./scene/custom/menu_scene.h"
+#include "./scene/custom/double_player_game_scene.h"
+#include "./scene/custom/settings_scene.h"
 
 
 #include "./manager/resources_manager.h"
@@ -22,12 +25,14 @@ using namespace std::chrono;
 Scene* start_scene = nullptr;
 Scene* menu_scene = nullptr;    
 Scene* game_scene = nullptr; 
+Scene* double_player_game_scene = nullptr;
+Scene* settings_scene = nullptr;
 
 Camera main_camera;
 
 // 绘制背景
 static void draw_background() { 
-    static IMAGE* img_baground = ResourcesManager::instance()->find_image("background"); // 获取背景图片
+    static IMAGE* img_background = ResourcesManager::instance()->find_image("background"); // 获取背景图片
 
     static Rect rect_dst = {
     0,
@@ -35,19 +40,21 @@ static void draw_background() {
     1920,
     1080
     }; // 计算背景图片绘制位置和大小
-    putimage_alpha(img_baground, &rect_dst); // 绘制背景图片
+    putimage_alpha(img_background, &rect_dst); // 绘制背景图片
 }
 
 void init_scene() {
     start_scene = new StartScene(); // 创建开始场景
     menu_scene = new MenuScene(); // 创建菜单场景
     game_scene = new GameScene(); // 创建游戏场景
+    double_player_game_scene = new DoublePlayerGameScene(); // 创建双人游戏场景
+    settings_scene = new SettingsScene(); // 创建设置场景
 }
 
 int main() {
     // HWND hwnd = initgraph(1080, 720, EW_SHOWCONSOLE); // 初始化图形窗口，设置窗口大小为1920x1080, "EW_SHOWCONSOLE":显示控制台
     HWND hwnd = initgraph(1080, 720);
-    SetWindowText(hwnd, _T("Never STOP - 1.0")); // 设置窗口标题
+    SetWindowText(hwnd, _T("Never STOP - 2.0")); // 设置窗口标题
 
     try {
         ResourcesManager::instance()->load(); // 加载资源
@@ -58,6 +65,7 @@ int main() {
         return -1; // 返回错误代码
     }
     
+    Settings::instance()->load(); // 加载设置
 
     init_scene(); // 初始化场景
     SceneManager::instance()->set_current_scene(start_scene); // 设置当前场景为开始场景
@@ -66,7 +74,7 @@ int main() {
     setbkmode(TRANSPARENT); // 设置文字透明背景
 
 
-    const nanoseconds frame_duration(1000000000 / 144); // 144 FPS
+    const nanoseconds frame_duration(1000000000 / Settings::instance()->get_fps()); // 144 FPS
     steady_clock::time_point last_tick = steady_clock::now(); 
 
     ExMessage msg; // 消息结构体，用于存储消息信息
@@ -90,14 +98,13 @@ int main() {
         // 处理游戏更新
         main_camera.on_update(delta.count()); // 更新摄像机
         SceneManager::instance()->on_update(delta.count()); // 更新当前场景
-        CollisionManager::instance()->process_collide(); // 更新碰撞管理器
 
         setbkcolor(RGB(0, 0, 0 )); // 设置背景颜色为黑色
         cleardevice(); // 清空屏幕
 
         // 处理游戏绘图
         SceneManager::instance()->on_render(main_camera); // 绘制当前场景
-        // CollisionManager::instance()->on_debug_render(main_camera); // 绘制碰撞调试信息
+        if(Settings::instance()->get_is_debug_on()) CollisionManager::instance()->on_debug_render(main_camera); // 绘制碰撞调试信息
 
         FlushBatchDraw(); // 将内存缓冲区中的绘图结果一次性输出到屏幕。
 

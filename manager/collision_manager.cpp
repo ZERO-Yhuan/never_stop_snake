@@ -28,7 +28,7 @@ void CollisionManager::destroy_collision_box(CollisionBox* collision_box) {
     delete collision_box;
 }
 
-#include <iostream>
+
 void CollisionManager::process_collide() {
     for(CollisionBox* collision_box_src : collision_box_list) {
 

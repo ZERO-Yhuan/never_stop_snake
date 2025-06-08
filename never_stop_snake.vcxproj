@@ -130,12 +130,17 @@
   <ItemGroup>
     <ClCompile Include="entity\entity.cpp" />
     <ClCompile Include="entity\player\custom\normal_snake.cpp" />
+    <ClCompile Include="entity\player\custom\normal_snake_p2.cpp" />
+    <ClCompile Include="entity\player\custom\speed_snake.cpp" />
     <ClCompile Include="entity\player\player.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager\collision_manager.cpp" />
     <ClCompile Include="manager\resources_manager.cpp" />
     <ClCompile Include="manager\scene_manager.cpp" />
+    <ClCompile Include="scene\custom\double_player_game_scene.cpp" />
     <ClCompile Include="scene\custom\game_scene.cpp" />
+    <ClCompile Include="tool\settings.cpp" />
+    <ClCompile Include="tool\snake_type_handle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="collision\collision_box.h" />
@@ -150,6 +155,8 @@
     <ClInclude Include="entity\custom\yellow_flower.h" />
     <ClInclude Include="entity\entity.h" />
     <ClInclude Include="entity\player\custom\normal_snake.h" />
+    <ClInclude Include="entity\player\custom\normal_snake_p2.h" />
+    <ClInclude Include="entity\player\custom\speed_snake.h" />
     <ClInclude Include="entity\player\player.h" />
     <ClInclude Include="manager\collision_manager.h" />
     <ClInclude Include="manager\resources_manager.h" />
@@ -159,11 +166,16 @@
     <ClInclude Include="resource2.h" />
     <ClInclude Include="resource\animation.h" />
     <ClInclude Include="resource\atlas.h" />
+    <ClInclude Include="scene\custom\double_player_game_scene.h" />
     <ClInclude Include="scene\custom\game_scene.h" />
     <ClInclude Include="scene\custom\menu_scene.h" />
+    <ClInclude Include="scene\custom\settings_scene.h" />
     <ClInclude Include="scene\custom\start_scene.h" />
     <ClInclude Include="scene\scene.h" />
     <ClInclude Include="tool\camera.h" />
+    <ClInclude Include="tool\settings.h" />
+    <ClInclude Include="tool\snake_type_handle.h" />
+    <ClInclude Include="tool\text_handle.h" />
     <ClInclude Include="tool\timer.h" />
     <ClInclude Include="tool\util.h" />
     <ClInclude Include="tool\vector2.h" />

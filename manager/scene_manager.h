@@ -5,6 +5,8 @@
 extern Scene* start_scene;
 extern Scene* menu_scene;
 extern Scene* game_scene;
+extern Scene* double_player_game_scene;
+extern Scene* settings_scene;
 
 class SceneManager {
 private:
@@ -18,7 +20,9 @@ public:
     { 
         Start,
         Menu,
-        Game
+        Game,
+        DoublePlayerGame,
+        Settings
     };
 
 

@@ -12,8 +12,6 @@ private:
     ResourcesManager();
     ~ResourcesManager();
 
-    // 图片旋转函数
-    // -----------------------------------------------------
 
 private:
     static ResourcesManager* _instance; // 单例对象

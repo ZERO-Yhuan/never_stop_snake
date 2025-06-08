@@ -47,17 +47,22 @@ public:
     * 如果到达则判断是否能触发，如果能触发并且目标函数不为空则触发函数，最后将【pass_time】还原
     */
     void on_update(float delta) {
+        // 更新游戏状态，如果游戏暂停则直接返回
         if (paused) return;
 
+        // 累加时间，检查是否达到等待时间
         pass_time += delta;
         if (pass_time >= wait_time) {
+            // 判断是否可以射击，以及是否已经射击过
             bool can_shot = (!one_shot || (one_shot && !shotted));
             shotted = true;
+            // 如果可以射击且有超时回调，则调用回调函数
             if (can_shot && on_timeout) {
                 on_timeout();
             }
+            // 重置经过的时间
             pass_time -= wait_time;
         }
-
     }
+
 };

@@ -49,6 +49,7 @@ inline void putimage_alpha(IMAGE* img, const Rect* rect_dst) {
     );
 }
 
+
 inline void outtextxy_shaded(int x, int y, LPCTSTR str) {
     settextcolor(RGB(45, 45, 45)); // 设置文本颜色为深灰色
     outtextxy(x + 2, y + 2, str); // 绘制阴影文本

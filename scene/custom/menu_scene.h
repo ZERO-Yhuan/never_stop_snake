@@ -5,18 +5,21 @@
 #include "../../manager/scene_manager.h"
 #include "../../manager/resources_manager.h"
 #include "../../resource/animation.h"
+#include "../../tool/snake_type_handle.h"
 
 
 
 class MenuScene : public Scene {
 private:
-    Animation snake_menu_animation;
-    std::vector<Button> buttons;
-    std::vector<Button> game_chose_buttons;
+    Animation snake_menu_animation; // 蛇的动画
+    std::vector<Button> buttons; // 菜单按钮
+    std::vector<Button> game_chose_buttons; // 游戏模式选择按钮
 
-    bool is_chose_game = false;
+    bool is_chose_game = false;  // 是否在进行游戏模式选择
 
-    int select_button = 0;
+    int select_button = 0; // 当前选择的按钮下标
+
+
 
 public:
 
@@ -27,7 +30,9 @@ public:
             is_chose_game = true;
             game_chose_buttons[select_button].set_selected(true);
             });
-        buttons.emplace_back(50, 200, 150, 80, _T("设置"));
+        buttons.emplace_back(50, 200, 150, 80, _T("设置"), [&] {
+            SceneManager::instance()->switch_scene_to(SceneManager::SceneType::Settings);
+            });
         buttons.emplace_back(50, 300, 150, 80, _T("退出游戏"), [&]() {
             exit(0);
             });
@@ -39,11 +44,18 @@ public:
             SceneManager::instance()->switch_scene_to(SceneManager::SceneType::Game, 1);
             });
         game_chose_buttons.emplace_back(50, 300, 150, 80, _T("多人模式"), [&]() {
+            SceneManager::instance()->switch_scene_to(SceneManager::SceneType::DoublePlayerGame);
             });
         game_chose_buttons.emplace_back(50, 400, 150, 80, _T("返回"), [&]() {
             game_chose_buttons[select_button].set_selected(false);
             on_exit();
             on_enter();
+            });
+        game_chose_buttons.emplace_back(50, 0, 150, 80, _T("普通蛇"), [&]() {
+            SnakeTypeHandle::instance()->current_snake_type = 
+                (SnakeTypeHandle::instance()->current_snake_type + 1) == SnakeTypeHandle::instance()->Max_Snake_Type ? 0 : SnakeTypeHandle::instance()->current_snake_type + 1;
+            game_chose_buttons[select_button].set_text(
+                SnakeTypeHandle::instance()->snake_type_names[SnakeTypeHandle::instance()->current_snake_type]);
             });
 
         snake_menu_animation.set_position(Vector2(getwidth() / 2, getheight() / 2));
@@ -57,7 +69,10 @@ public:
         buttons[select_button].set_selected(true);
     }
     void on_exit() {
-        buttons[select_button].set_selected(false);
+        if(!is_chose_game)
+            buttons[select_button].set_selected(false);
+        else
+            game_chose_buttons[select_button].set_selected(false);
         is_chose_game = false;
         select_button = 0;
     }
@@ -66,15 +81,15 @@ public:
     }
     void on_render(const Camera& camera) {
         Rect rect_dst(0, 0, 1080, 720);
-        putimage_alpha(ResourcesManager::instance()->find_image("background"), &rect_dst);
+        putimage_alpha(ResourcesManager::instance()->find_image("background"), &rect_dst); // 背景
 
-        snake_menu_animation.on_render(camera);
+        snake_menu_animation.on_render(camera); // 渲染蛇动画
         
-        if (!is_chose_game) {
+        if (!is_chose_game) { // 渲染菜单按钮
             for (Button& button : buttons)
                 button.on_render();
-        }
-        else {
+        } 
+        else { // 渲染游戏模式选择按钮
             for (Button& button : game_chose_buttons)
                 button.on_render();
         }
