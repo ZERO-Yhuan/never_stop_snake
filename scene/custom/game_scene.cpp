@@ -248,6 +248,7 @@ void GameScene::on_enter() {
 void GameScene::on_exit() {
     mushroom_generation_timer.pause(); // 暂停蘑菇生成计时器
     aerolite_generation_timer.pause();
+    time_limit_timer.pause();
 
     destroy_entities();
 
@@ -327,7 +328,7 @@ void GameScene::on_render(const Camera& camera) {
 
     render_score_text();
 
-    if(game_state == 1)
+    if(game_state == 1 && !is_game_over)
         render_time_text();
 
     if (is_game_over) {

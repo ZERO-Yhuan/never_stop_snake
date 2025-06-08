@@ -65,6 +65,17 @@ void DoublePlayerGameScene::render_score_text() {
     }
 }
 
+void DoublePlayerGameScene::render_time_text() {
+    LPCTSTR time_str = _T("%d");
+    TCHAR time_text[32];
+    _stprintf_s(time_text, time_str, current_remainder_time);
+    if (!is_game_over) {
+        putimage_alpha(ResourcesManager::instance()->find_image("score_background"), &rect_time);
+        outtextxy_shaded(rect_time.x + 20, rect_time.y + 15, _T("当前时间:"));
+        outtextxy_shaded(rect_time.x + 20, rect_time.y + 45, time_text);
+    }
+}
+
 void DoublePlayerGameScene::generate_aerolite(int num) {
     for (int i = 0; i < num && i < Max_Aerolite_Num; i++) {
         int grid_x, grid_y;
@@ -168,6 +179,19 @@ DoublePlayerGameScene::DoublePlayerGameScene() {
 
  
     } 
+
+    {   // 初始化时间限制计时器
+        time_limit_timer.set_one_shot(false);
+        time_limit_timer.set_wait_time(1);
+        time_limit_timer.set_on_timeout([this]() {
+            current_remainder_time--;
+            if (current_remainder_time == 0) {
+                is_game_over = true; // 如果时间限制结束，则设置游戏结束状态
+                play_audio(_T("game_over"), false);
+            }
+            });
+        time_limit_timer.pause(); // 初始状态下暂停计时器
+    }
 }
 
 DoublePlayerGameScene::~DoublePlayerGameScene() {
@@ -233,11 +257,14 @@ void DoublePlayerGameScene::on_enter() {
     aerolite_generation_timer.restart();
     aerolite_generation_timer.resume();
 
+    time_limit_timer.restart();
+    time_limit_timer.resume();
 }
 
 void DoublePlayerGameScene::on_exit() {
     mushroom_generation_timer.pause(); // 暂停蘑菇生成计时器
     aerolite_generation_timer.pause();
+    time_limit_timer.pause();
 
     destroy_entities();
 
@@ -256,6 +283,7 @@ void DoublePlayerGameScene::on_exit() {
     buttons_game_over[select_button_game_over].set_selected(false); // 取消选中当前按钮
     select_button_paused = 0; // 重置选中按钮索引
     select_button_game_over = 0; // 重置选中按钮索引
+    current_remainder_time = Limit_Time; // 重置时间限制
 
     is_paused = false; // 重置暂停状态
     is_game_over = false; // 重置游戏结束状态
@@ -266,8 +294,19 @@ void DoublePlayerGameScene::on_exit() {
 
 void DoublePlayerGameScene::on_update(float delta) {
     
+    if (is_P1game_over || is_P2game_over || is_game_draw) return;
 
-    if (is_paused || is_game_over || is_P1game_over || is_P2game_over) return; // 如果游戏暂停或结束，则不更新游戏逻辑
+    if (p1->get_alive() && p2->get_alive() && is_game_over) {
+        if (p1->get_score() > p2->get_score())
+            is_P2game_over = true;
+        else if (p1->get_score() < p2->get_score())
+            is_P1game_over = true;
+        else
+            is_game_draw = true;
+        play_audio(_T("game_over"), false);
+    }
+
+    if (is_paused || is_game_over) return; // 如果游戏暂停或结束，则不更新游戏逻辑
 
     if (!p1->get_alive()) {
         is_game_over = true; // 如果玩家死亡，则设置游戏结束状态
@@ -280,6 +319,8 @@ void DoublePlayerGameScene::on_update(float delta) {
         is_P2game_over = true;
         play_audio(_T("game_over"), false);
     }
+
+
 
     if (!p1->get_alive() && !p2->get_alive()) {
         is_game_over = true;
@@ -296,6 +337,8 @@ void DoublePlayerGameScene::on_update(float delta) {
 
     mushroom_generation_timer.on_update(delta); // 更新蘑菇生成计时器
     aerolite_generation_timer.on_update(delta);
+
+    time_limit_timer.on_update(delta);
 
     for (Mushroom* mushroom : mushrooms) {
         if (!mushroom->is_need_growth()) { // 只更新已经生长的蘑菇
@@ -338,6 +381,9 @@ void DoublePlayerGameScene::on_render(const Camera& camera) {
     }
 
     render_score_text();
+
+    if (!is_game_over)
+        render_time_text();
 
     if (is_game_over) {
         for (Button& button : buttons_game_over) {
